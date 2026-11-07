@@ -1,5 +1,55 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model List<BlobListItemViewModel>
 @{
+    ViewData["Title"] = "Imagery";
+}
+
+<h2>Recent Imagery</h2>
+
+@if (TempData["Message"] is string msg)
+{
+    <div class="alert alert-success">@msg</div>
+}
+
+@if (Model.Count == 0)
+{
+    <p class="text-muted">
+        No uploads yet. <a asp-action="Upload">Upload the first image</a>.
+    </p>
+}
+else
+{
+    <div class="row g-3 mt-1">
+        @foreach (var b in Model)
+        {
+            <div class="col-lg-3 col-md-4 col-sm-6">
+                <div class="card h-100">
+                    @if (b.IsImage)
+                    {
+                        <a href="@b.Url" target="_blank" rel="noopener">
+                            <img src="@b.Url" alt="@b.Name" loading="lazy"
+                                 class="card-img-top"
+                                 style="object-fit:cover;height:180px;" />
+                        </a>
+                    }
+                    else
+                    {
+                        <div class="d-flex align-items-center justify-content-center
+                            bg-secondary text-white"
+                             style="height:180px;">
+                            <span>@b.ContentType</span>
+                        </div>
+                    }
+                    <div class="card-body p-2">
+                        <div class="text-truncate small" title="@b.Name">
+                            @System.IO.Path.GetFileName(b.Name)
+                        </div>
+                        <div class="text-muted small">
+                            @b.SizeBytes.ToString("N0") B ·
+                            @b.UploadedUtc?.UtcDateTime.ToString("u")
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
 }

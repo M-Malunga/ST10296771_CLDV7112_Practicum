@@ -1,5 +1,31 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model TelemetryViewModel
 @{
+    ViewData["Title"] = "Telemetry";
 }
+
+<h2>Sensor Telemetry</h2>
+
+<form method="get" class="row g-2 my-3">
+    <div class="col-auto"><input name="sensorId" value="@Model.SensorId" class="form-control" placeholder="Sensor ID" /></div>
+    <div class="col-auto"><button class="btn btn-primary" type="submit">Query</button></div>
+</form>
+
+@if (!string.IsNullOrEmpty(Model.Error))
+{
+    <div class="alert alert-danger">@Model.Error</div>
+}
+
+<table class="table table-sm">
+    <thead><tr><th>Sensor</th><th>Reading Time (UTC)</th><th>Moisture %</th><th>Temp °C</th></tr></thead>
+    <tbody>
+        @foreach (var r in Model.Readings)
+        {
+            <tr>
+                <td>@r.PartitionKey</td>
+                <td>@r.ReadingTimestamp?.UtcDateTime.ToString("u")</td>
+                <td>@r.MoisturePercent.ToString("F1")</td>
+                <td>@r.TemperatureCelsius.ToString("F1")</td>
+            </tr>
+        }
+    </tbody>
+</table>
